@@ -82,9 +82,11 @@ function Test-SymlinkPointsInto {
     $resolvedTrim = [System.IO.Path]::TrimEndingDirectorySeparator($resolved)
     $rootTrim     = [System.IO.Path]::TrimEndingDirectorySeparator($expectedRootResolved)
 
+    $comparison = if ($IsWindows) { [System.StringComparison]::OrdinalIgnoreCase } else { [System.StringComparison]::Ordinal }
+
     # Equal-to-root, or strictly under root.
-    if ($resolvedTrim -ieq $rootTrim) { return $true }
-    return $resolvedTrim.StartsWith($rootTrim + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)
+    if ($resolvedTrim.Equals($rootTrim, $comparison)) { return $true }
+    return $resolvedTrim.StartsWith($rootTrim + [System.IO.Path]::DirectorySeparatorChar, $comparison)
 }
 
 function Get-ExistingEntry {
