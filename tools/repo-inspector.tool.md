@@ -14,8 +14,7 @@ config:
     - "${BOTTERYBARN_ROOT}/tools/scripts/repo-inspector.ps1"
     - -RepoPath
     - "{repo_path}"
-  env:
-    BOTTERYBARN_ROOT: <absolute path to this BotteryBarn repo on the host>
+  # BOTTERYBARN_ROOT should be set by the host/runtime to the absolute path of this BotteryBarn checkout.
 inputs:
   - name: repo_path
     description: Absolute path to the repository to inspect.
