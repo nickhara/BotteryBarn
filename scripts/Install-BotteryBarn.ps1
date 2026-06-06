@@ -201,8 +201,8 @@ Either:
   - Enable Developer Mode (Settings -> Privacy & security -> For developers), or
   - Re-run this script from an elevated PowerShell.
 "@
-    if ($DryRun) {
-        Write-Warning ($msg + "`nContinuing because -DryRun was specified; no changes will be made.")
+    if ($WhatIfPreference) {
+        Write-Warning ($msg + "`nContinuing because -DryRun/-WhatIf was specified; no changes will be made.")
     } else {
         throw ($msg + "`nAborting.")
     }
@@ -222,6 +222,7 @@ foreach ($folder in $Folders) {
     $linkValue = Resolve-LinkValue -SourcePath $source -LinkPath $link -UseRelative:$Relative.IsPresent
 
     $existing = Get-ExistingEntry -LiteralPath $link
+    $plannedPreRemoval = $null   # tracks dry-run preview for the pre-removal step
     if ($existing) {
         $isSymlink = $existing.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)
 
@@ -243,7 +244,9 @@ foreach ($folder in $Folders) {
             }
             if ($PSCmdlet.ShouldProcess($link, 'Remove mismatched/dangling symlink')) {
                 Remove-Item -LiteralPath $link -Force
-            } elseif (-not $DryRun) {
+            } elseif ($WhatIfPreference) {
+                $plannedPreRemoval = [pscustomobject]@{ Folder = $folder; Action = 'would remove (dry run)'; Detail = "$link -> $existingTarget" }
+            } else {
                 $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = $link })
                 continue
             }
@@ -258,7 +261,9 @@ foreach ($folder in $Folders) {
             }
             if ($PSCmdlet.ShouldProcess($link, "Rename existing entry to $backup")) {
                 Move-Item -LiteralPath $link -Destination $backup
-            } elseif (-not $DryRun) {
+            } elseif ($WhatIfPreference) {
+                $plannedPreRemoval = [pscustomobject]@{ Folder = $folder; Action = 'would rename (dry run)'; Detail = "$link -> $backup" }
+            } else {
                 $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = $link })
                 continue
             }
@@ -266,10 +271,15 @@ foreach ($folder in $Folders) {
     }
 
     if ($PSCmdlet.ShouldProcess($link, "Create symlink -> $linkValue")) {
-        New-Item -ItemType SymbolicLink -Path $link -Value $linkValue | Out-Null
+        New-Item -ItemType SymbolicLink -Path $link -Target $linkValue | Out-Null
+        if ($plannedPreRemoval) { $summary.Add($plannedPreRemoval) }
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'linked'; Detail = "$link -> $linkValue" })
-    } else {
+    } elseif ($WhatIfPreference) {
+        if ($plannedPreRemoval) { $summary.Add($plannedPreRemoval) }
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'would link (dry run)'; Detail = "$link -> $linkValue" })
+    } else {
+        if ($plannedPreRemoval) { $summary.Add($plannedPreRemoval) }
+        $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = "$link -> $linkValue" })
     }
 }
 

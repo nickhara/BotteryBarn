@@ -148,8 +148,10 @@ foreach ($folder in $Folders) {
     if ($PSCmdlet.ShouldProcess($link, 'Remove BotteryBarn symlink')) {
         Remove-Item -LiteralPath $link -Force
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'removed'; Detail = $link })
-    } else {
+    } elseif ($WhatIfPreference) {
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'would remove (dry run)'; Detail = $link })
+    } else {
+        $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = $link })
     }
 }
 
