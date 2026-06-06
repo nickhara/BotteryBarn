@@ -156,6 +156,29 @@ function Test-SymlinkPointsTo {
             [System.IO.Path]::TrimEndingDirectorySeparator($expected))
 }
 
+function Get-ExistingEntry {
+    # Returns the FileSystemInfo for $Path if anything exists there (including a
+    # symlink whose target is missing — which Test-Path -LiteralPath reports as
+    # absent on Windows/PS7), or $null otherwise.
+    param(
+        [Parameter(Mandatory)] [string] $Path
+    )
+
+    $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+    if ($item) { return $item }
+
+    # Fallback: enumerate the parent directory so we can see a dangling reparse
+    # point that Get-Item refuses to materialize.
+    $parent = Split-Path -Parent $Path
+    $leaf   = Split-Path -Leaf   $Path
+    if (-not $parent -or -not (Test-Path -LiteralPath $parent -PathType Container)) {
+        return $null
+    }
+    return Get-ChildItem -LiteralPath $parent -Force -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -ieq $leaf } |
+        Select-Object -First 1
+}
+
 # ----- main -----
 
 $promptCraftRoot = Get-PromptCraftRoot
@@ -198,20 +221,27 @@ foreach ($folder in $Folders) {
 
     $linkValue = Resolve-LinkValue -SourcePath $source -LinkPath $link -UseRelative:$Relative.IsPresent
 
-    if (Test-Path -LiteralPath $link) {
-        $existing = Get-Item -LiteralPath $link -Force
+    $existing = Get-ExistingEntry -Path $link
+    if ($existing) {
         $isSymlink = $existing.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)
 
         if ($isSymlink) {
-            if (Test-SymlinkPointsTo -Item $existing -ExpectedPath $source) {
+            $pointsHere = $false
+            try { $pointsHere = Test-SymlinkPointsTo -Item $existing -ExpectedPath $source } catch { $pointsHere = $false }
+
+            if ($pointsHere) {
                 $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (already linked)'; Detail = $link })
                 continue
             }
+            # Mismatched OR dangling symlink — both refuse without -Force.
+            $existingTarget = if ($existing.Target) {
+                if ($existing.Target -is [System.Array]) { $existing.Target[0] } else { $existing.Target }
+            } else { '<unreadable>' }
             if (-not $Force) {
-                $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'BLOCKED (wrong link, use -Force)'; Detail = "$link -> $($existing.Target)" })
+                $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'BLOCKED (wrong/dangling link, use -Force)'; Detail = "$link -> $existingTarget" })
                 continue
             }
-            if ($PSCmdlet.ShouldProcess($link, 'Remove mismatched symlink')) {
+            if ($PSCmdlet.ShouldProcess($link, 'Remove mismatched/dangling symlink')) {
                 Remove-Item -LiteralPath $link -Force
             }
         } else {

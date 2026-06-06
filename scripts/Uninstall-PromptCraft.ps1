@@ -68,10 +68,12 @@ function Test-SymlinkPointsInto {
     $linkParent = Split-Path -Parent $Item.FullName
     try {
         if ([System.IO.Path]::IsPathRooted($candidate)) {
-            $resolved = (Resolve-Path -LiteralPath $candidate -ErrorAction Stop).ProviderPath
+            $resolvedCandidate = $candidate
         } else {
-            $resolved = (Resolve-Path -LiteralPath (Join-Path $linkParent $candidate) -ErrorAction Stop).ProviderPath
+            $resolvedCandidate = Join-Path $linkParent $candidate
         }
+        # Normalize without requiring the target to exist (handles dangling links).
+        $resolved = [System.IO.Path]::GetFullPath($resolvedCandidate)
     } catch {
         return $false
     }
@@ -83,6 +85,27 @@ function Test-SymlinkPointsInto {
     # Equal-to-root, or strictly under root.
     if ($resolvedTrim -ieq $rootTrim) { return $true }
     return $resolvedTrim.StartsWith($rootTrim + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Get-ExistingEntry {
+    # Returns the FileSystemInfo for $Path if anything exists there (including a
+    # symlink whose target is missing — Test-Path -LiteralPath reports those as
+    # absent on Windows/PS7), or $null otherwise.
+    param(
+        [Parameter(Mandatory)] [string] $Path
+    )
+
+    $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+    if ($item) { return $item }
+
+    $parent = Split-Path -Parent $Path
+    $leaf   = Split-Path -Leaf   $Path
+    if (-not $parent -or -not (Test-Path -LiteralPath $parent -PathType Container)) {
+        return $null
+    }
+    return Get-ChildItem -LiteralPath $parent -Force -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -ieq $leaf } |
+        Select-Object -First 1
 }
 
 # ----- main -----
@@ -104,12 +127,12 @@ $summary = [System.Collections.Generic.List[pscustomobject]]::new()
 foreach ($folder in $Folders) {
     $link = Join-Path $resolvedTarget $folder
 
-    if (-not (Test-Path -LiteralPath $link)) {
+    $item = Get-ExistingEntry -Path $link
+    if (-not $item) {
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (absent)'; Detail = $link })
         continue
     }
 
-    $item = Get-Item -LiteralPath $link -Force
     $isSymlink = $item.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)
 
     if (-not $isSymlink) {
