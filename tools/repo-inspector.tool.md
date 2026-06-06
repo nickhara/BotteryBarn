@@ -7,10 +7,11 @@ description: |
   many small shell commands.
 type: cli
 config:
+  command: pwsh
   args_template:
     - -NoProfile
-    - -Command
-    - "param([string]$RepoPath) throw 'repo-inspector is contract-only; implementation not shipped yet.'"
+    - -File
+    - "${BOTTERYBARN_ROOT}/tools/scripts/repo-inspector.ps1"
     - -RepoPath
     - "{repo_path}"
   env:
