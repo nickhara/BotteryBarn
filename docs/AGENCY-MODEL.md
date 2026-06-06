@@ -4,7 +4,7 @@ BotteryBarn is organized around the **agency model**: agents are the primary pri
 
 ## The five resource types
 
-```
+```text
                         ┌────────────────────┐
                         │      Agent         │
                         │  (persona + plan)  │

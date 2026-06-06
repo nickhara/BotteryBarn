@@ -4,7 +4,7 @@ This document is the authoritative reference for BotteryBarn's directory layout,
 
 ## Top level
 
-```
+```text
 BotteryBarn/
 ├── agents/         # Agent definitions (the agency-model primary primitive)
 ├── skills/         # Skill packages (Anthropic-style, one directory per skill)

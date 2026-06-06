@@ -4,7 +4,7 @@
 
 ## Directory convention
 
-```
+```text
 skills/<skill-name>/
 ├── SKILL.md            # required: frontmatter + procedure
 ├── scripts/            # optional: executable helpers the skill invokes

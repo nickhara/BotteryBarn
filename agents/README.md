@@ -4,7 +4,7 @@ First-class **agent definitions**. In BotteryBarn's agency model, agents are the
 
 ## File convention
 
-```
+```text
 agents/<name>.agent.md
 ```
 

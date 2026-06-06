@@ -8,7 +8,7 @@ BotteryBarn is an **ecosystem-neutral library** of agents, skills, tools, prompt
 
 The BotteryBarn installer creates symlinks for **generic top-level folders only**:
 
-```
+```text
 <target-repo>/
 ├── agents/        → <BotteryBarn>/agents/
 ├── skills/        → <BotteryBarn>/skills/

@@ -8,7 +8,7 @@ BotteryBarn is organized around the **agency model**: **agents** are the primary
 
 ## Repository structure
 
-```
+```text
 BotteryBarn/
 ├── agents/         # Agent definitions (persona + methodology + output format)
 │   └── _templates/ # Starter files to copy when adding a new agent

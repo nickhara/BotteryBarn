@@ -4,7 +4,7 @@
 
 ## File convention
 
-```
+```text
 instructions/<name>.instructions.md
 ```
 

@@ -42,7 +42,7 @@ Inputs:
 ```
 
 Expected output:
-```
+```text
 <sample output>
 ```
 

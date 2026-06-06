@@ -4,7 +4,7 @@
 
 ## File convention
 
-```
+```text
 prompts/<name>.prompt.md
 ```
 
