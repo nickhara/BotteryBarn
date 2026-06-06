@@ -168,7 +168,9 @@ function Get-ExistingEntry {
     if ($item) { return $item }
 
     # Fallback: enumerate the parent directory so we can see a dangling reparse
-    # point that Get-Item refuses to materialize.
+    # point that Get-Item refuses to materialize (Windows only).
+    if (-not $IsWindows) { return $null }
+
     $parent = Split-Path -Parent $LiteralPath
     $leaf   = Split-Path -Leaf   $LiteralPath
     if (-not $parent -or -not (Test-Path -LiteralPath $parent -PathType Container)) {
