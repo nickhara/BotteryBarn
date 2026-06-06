@@ -117,7 +117,7 @@ Body = durable, rule-shaped guidance ("Always…", "Never…", "Prefer X over Y"
 ## Naming rules
 
 - All identifiers are `kebab-case`: lowercase letters, digits, and `-`.
-- The `name` field in frontmatter must match the file or directory stem exactly.
+- Where the schema defines a `name` field (agents, skills, tools), it must match the file or directory stem exactly. Prompts and instructions have no `name` field; their filename stem is the identifier.
 - Use short, descriptive names. Prefer `pr-reviewer` over `agent-for-reviewing-pull-requests`.
 - Don't suffix names with the resource type (`my-agent.agent.md` is fine, `my-agent-agent.agent.md` is not).
 

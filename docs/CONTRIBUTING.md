@@ -32,7 +32,7 @@ Use the decision tree in `AGENCY-MODEL.md`:
 
 ### 3. Fill it in
 
-- Set `name` in frontmatter to match the file or directory stem.
+- For agents, skills, and tools, set `name` in frontmatter to match the file or directory stem. Prompts and instructions have no `name` field; the filename stem is the identifier.
 - Write the body following the section structure in the template — don't drop sections, leave them empty if you have nothing useful to add and the section truly doesn't apply.
 - Use **second person** ("You are…", "You should…") for agent bodies and instruction bodies. Use **imperative** ("Inventory the root.", "Compose the brief.") for skill procedures.
 
@@ -48,7 +48,7 @@ Use the decision tree in `AGENCY-MODEL.md`:
 Run through this checklist before opening a PR:
 
 - [ ] Filename and directory name are `kebab-case`.
-- [ ] `name` in frontmatter matches the filename/directory stem.
+- [ ] Where the schema includes a `name` field (agents, skills, tools), it matches the filename/directory stem.
 - [ ] Frontmatter parses as valid YAML.
 - [ ] All cross-references resolve (e.g., every id in an agent's `tools:` exists under `tools/`).
 - [ ] You linked to the new entry from the parent folder's `README.md` table if your folder maintains one (currently only `STRUCTURE.md` keeps the central seed-example table — update it if the new entry replaces or augments a seed example).
