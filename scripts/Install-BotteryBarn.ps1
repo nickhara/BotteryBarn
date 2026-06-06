@@ -152,8 +152,12 @@ function Test-SymlinkPointsTo {
     }
 
     $expected = (Resolve-Path -LiteralPath $ExpectedPath -ErrorAction Stop).ProviderPath
-    return ([System.IO.Path]::TrimEndingDirectorySeparator($resolved) -ieq
-            [System.IO.Path]::TrimEndingDirectorySeparator($expected))
+    $resolvedTrim = [System.IO.Path]::TrimEndingDirectorySeparator($resolved)
+    $expectedTrim = [System.IO.Path]::TrimEndingDirectorySeparator($expected)
+    if ($IsWindows) {
+        return ($resolvedTrim -ieq $expectedTrim)
+    }
+    return ($resolvedTrim -ceq $expectedTrim)
 }
 
 function Get-ExistingEntry {
