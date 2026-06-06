@@ -69,7 +69,7 @@ Expected output (abbreviated):
 }
 ```
 
-## Errors
+## Errors and expected conditions
 
 - **`repo_path does not exist`** — verify the path; the tool refuses relative paths.
-- **`No manifest detected`** — not an error; `manifests` will be `[]`. Treat the repo as plain source.
+- **`No manifest detected`** — expected for repos without manifests; `manifests` will be `[]`. Treat the repo as plain source.
