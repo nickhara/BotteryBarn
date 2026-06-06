@@ -40,7 +40,7 @@ outputs:
 - The agent needs a structured inventory of an unknown repo before reasoning about it.
 - An onboarding or architecture skill (e.g., `repo-onboarding`) is about to start and wants step-1 data in one call.
 
-## When NOT to use
+## When not to use
 
 - For targeted searches within a single file — use a grep tool instead.
 - For repositories you have already inspected in this session.

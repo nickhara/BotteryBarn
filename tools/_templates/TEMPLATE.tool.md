@@ -26,7 +26,7 @@ outputs:
 - <Trigger 1>
 - <Trigger 2>
 
-## When NOT to use
+## When not to use
 
 - <Limitation or cheaper alternative>
 

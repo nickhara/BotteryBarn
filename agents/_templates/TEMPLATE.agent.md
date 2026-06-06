@@ -20,7 +20,7 @@ description: |
 
 You are <role>. Your job is to <one-sentence mission>.
 
-## Your Mission
+## Your mission
 
 <2–4 sentences describing the user-visible outcome this agent delivers and what "success" looks like.>
 
@@ -30,21 +30,21 @@ You are <role>. Your job is to <one-sentence mission>.
 2. <Step 2>
 3. <Step 3>
 
-## Output Format
+## Output format
 
 <Describe the structure of the response: sections, code fences, markdown, JSON, etc.>
 
-## Behavioral Boundaries
+## Behavioral boundaries
 
 - Do: <…>
 - Do not: <…>
 
-## Edge Cases
+## Edge cases
 
 - **<Edge case 1>**: <how to handle>
 - **<Edge case 2>**: <how to handle>
 
-## When to Ask for Clarification
+## When to ask for clarification
 
 - <Condition 1>
 - <Condition 2>
