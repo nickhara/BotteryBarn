@@ -30,9 +30,10 @@ outputs:
 # repo-inspector
 
 > **Status: contract only.** This entry documents the intended interface. The
-> reference implementation script (`tools/scripts/repo-inspector.ps1`) is not
-> shipped in v1 of BotteryBarn. Downstream agents may reference this tool by id
-> today; an implementer can land the script later without renaming or rewiring.
+> reference implementation at `tools/scripts/repo-inspector.ps1` is currently a
+> stub that fails fast with a clear "not implemented" message and exits with
+> code 2. Downstream agents may register this tool by id today; an implementer
+> can replace the stub later without renaming or rewiring.
 
 ## When to use
 
