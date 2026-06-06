@@ -100,6 +100,8 @@ function Get-ExistingEntry {
     $item = Get-Item -LiteralPath $LiteralPath -Force -ErrorAction SilentlyContinue
     if ($item) { return $item }
 
+    if (-not $IsWindows) { return $null }
+
     $parent = Split-Path -Parent $LiteralPath
     $leaf   = Split-Path -Leaf   $LiteralPath
     if (-not $parent -or -not (Test-Path -LiteralPath $parent -PathType Container)) {
