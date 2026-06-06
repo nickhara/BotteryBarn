@@ -1,11 +1,11 @@
 # Repository structure
 
-This document is the authoritative reference for PromptCraft's directory layout, file naming conventions, and frontmatter schemas. New contributors should read this end-to-end before adding content.
+This document is the authoritative reference for BotteryBarn's directory layout, file naming conventions, and frontmatter schemas. New contributors should read this end-to-end before adding content.
 
 ## Top level
 
 ```
-PromptCraft/
+BotteryBarn/
 ├── agents/         # Agent definitions (the agency-model primary primitive)
 ├── skills/         # Skill packages (Anthropic-style, one directory per skill)
 ├── tools/          # Tool catalog (MCP servers, CLIs, functions, APIs)
@@ -24,7 +24,7 @@ Each of `agents/`, `skills/`, `tools/`, `prompts/`, and `instructions/` ships wi
 
 ## Why this layout
 
-PromptCraft is **ecosystem-neutral**: the same files can be surfaced under GitHub Copilot's `.github/...` paths, Claude Code's `.claude/...` paths, or no tool-specific surface at all. The top-level folders are the canonical home; tool-specific paths (when needed) are produced by additional symlinks in the consuming repo (see `USAGE.md`).
+BotteryBarn is **ecosystem-neutral**: the same files can be surfaced under GitHub Copilot's `.github/...` paths, Claude Code's `.claude/...` paths, or no tool-specific surface at all. The top-level folders are the canonical home; tool-specific paths (when needed) are produced by additional symlinks in the consuming repo (see `USAGE.md`).
 
 The layout is also **agency-first** — agents are the organizing primitive. See `AGENCY-MODEL.md` for the rationale.
 

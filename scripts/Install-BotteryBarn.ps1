@@ -1,17 +1,17 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-    Install PromptCraft into a target repository by creating directory symlinks.
+    Install BotteryBarn into a target repository by creating directory symlinks.
 
 .DESCRIPTION
-    Creates directory symlinks at <TargetPath>/<folder> pointing at this PromptCraft
+    Creates directory symlinks at <TargetPath>/<folder> pointing at this BotteryBarn
     repo's <folder>, for each folder in -Folders (default: agents, skills, tools,
     prompts, instructions).
 
     Idempotent: if a symlink already points at the correct source, it is left in
     place. Refuses to overwrite real (non-symlink) directories unless -Force is
     supplied, in which case the existing entry is renamed to
-    <name>.promptcraft-backup before linking.
+    <name>.botterybarn-backup before linking.
 
     On Windows, symlink creation requires either Developer Mode or an elevated
     (admin) shell. The script detects this and prints actionable guidance.
@@ -21,33 +21,33 @@
 
 .PARAMETER Folders
     Subset of folders to link. Default: agents, skills, tools, prompts, instructions.
-    Only folders that exist in this PromptCraft repo are linked; missing source
+    Only folders that exist in this BotteryBarn repo are linked; missing source
     folders are reported and skipped.
 
 .PARAMETER Force
     Replace existing entries at the target. Real directories are renamed to
-    <name>.promptcraft-backup; mismatched symlinks are removed and recreated.
+    <name>.botterybarn-backup; mismatched symlinks are removed and recreated.
 
 .PARAMETER Relative
     Create relative-path symlinks (computed from <TargetPath> to this repo).
-    Useful when PromptCraft and the target repo are siblings that may move
+    Useful when BotteryBarn and the target repo are siblings that may move
     together.
 
 .PARAMETER DryRun
     Print the planned actions without executing them. Alias for -WhatIf.
 
 .EXAMPLE
-    ./Install-PromptCraft.ps1 -TargetPath C:\src\my-repo
+    ./Install-BotteryBarn.ps1 -TargetPath C:\src\my-repo
 
     Installs all five top-level folders into C:\src\my-repo.
 
 .EXAMPLE
-    ./Install-PromptCraft.ps1 -TargetPath ..\my-repo -Folders agents,prompts -Relative
+    ./Install-BotteryBarn.ps1 -TargetPath ..\my-repo -Folders agents,prompts -Relative
 
     Installs only agents and prompts, using relative-path symlinks.
 
 .EXAMPLE
-    ./Install-PromptCraft.ps1 -TargetPath C:\src\my-repo -DryRun
+    ./Install-BotteryBarn.ps1 -TargetPath C:\src\my-repo -DryRun
 
     Shows what would happen without making changes.
 
@@ -81,7 +81,7 @@ if ($DryRun) {
     $WhatIfPreference = $true
 }
 
-function Get-PromptCraftRoot {
+function Get-BotteryBarnRoot {
     # scripts/ lives directly under the repo root.
     $scriptDir = Split-Path -Parent $PSCommandPath
     return (Resolve-Path (Join-Path $scriptDir '..')).ProviderPath
@@ -181,8 +181,8 @@ function Get-ExistingEntry {
 
 # ----- main -----
 
-$promptCraftRoot = Get-PromptCraftRoot
-Write-Host "PromptCraft root : $promptCraftRoot"
+$botteryBarnRoot = Get-BotteryBarnRoot
+Write-Host "BotteryBarn root : $botteryBarnRoot"
 
 if (-not (Test-Path -LiteralPath $TargetPath -PathType Container)) {
     throw "TargetPath does not exist or is not a directory: $TargetPath"
@@ -211,7 +211,7 @@ Either:
 $summary = [System.Collections.Generic.List[pscustomobject]]::new()
 
 foreach ($folder in $Folders) {
-    $source = Join-Path $promptCraftRoot $folder
+    $source = Join-Path $botteryBarnRoot $folder
     $link   = Join-Path $resolvedTarget $folder
 
     if (-not (Test-Path -LiteralPath $source -PathType Container)) {
@@ -249,9 +249,9 @@ foreach ($folder in $Folders) {
                 $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'BLOCKED (real dir/file present, use -Force)'; Detail = $link })
                 continue
             }
-            $backup = "$link.promptcraft-backup"
+            $backup = "$link.botterybarn-backup"
             if (Test-Path -LiteralPath $backup) {
-                $backup = "$link.promptcraft-backup-$(Get-Date -Format 'yyyyMMddHHmmss')"
+                $backup = "$link.botterybarn-backup-$(Get-Date -Format 'yyyyMMddHHmmss')"
             }
             if ($PSCmdlet.ShouldProcess($link, "Rename existing entry to $backup")) {
                 Move-Item -LiteralPath $link -Destination $backup

@@ -1,6 +1,6 @@
 # agents/
 
-First-class **agent definitions**. In PromptCraft's agency model, agents are the primary organizing primitive — every other resource type (skills, tools, prompts, instructions) exists to be composed by an agent.
+First-class **agent definitions**. In BotteryBarn's agency model, agents are the primary organizing primitive — every other resource type (skills, tools, prompts, instructions) exists to be composed by an agent.
 
 ## File convention
 

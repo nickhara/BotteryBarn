@@ -1,6 +1,6 @@
 ---
 applyTo: "**"
-description: Repo-wide baseline behavior for any agent operating in a PromptCraft-equipped repository.
+description: Repo-wide baseline behavior for any agent operating in a BotteryBarn-equipped repository.
 ---
 
 # General instructions

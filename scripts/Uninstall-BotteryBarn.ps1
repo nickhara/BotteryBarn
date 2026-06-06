@@ -1,12 +1,12 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-    Remove PromptCraft symlinks from a target repository.
+    Remove BotteryBarn symlinks from a target repository.
 
 .DESCRIPTION
     For each folder in -Folders (default: agents, skills, tools, prompts,
     instructions), inspects <TargetPath>/<folder> and removes it ONLY IF it is
-    a symlink that points back into this PromptCraft repo. Real directories
+    a symlink that points back into this BotteryBarn repo. Real directories
     and unrelated symlinks are left untouched.
 
 .PARAMETER TargetPath
@@ -19,14 +19,14 @@
     Print the planned actions without executing them. Alias for -WhatIf.
 
 .EXAMPLE
-    ./Uninstall-PromptCraft.ps1 -TargetPath C:\src\my-repo
+    ./Uninstall-BotteryBarn.ps1 -TargetPath C:\src\my-repo
 
 .EXAMPLE
-    ./Uninstall-PromptCraft.ps1 -TargetPath C:\src\my-repo -Folders prompts -DryRun
+    ./Uninstall-BotteryBarn.ps1 -TargetPath C:\src\my-repo -Folders prompts -DryRun
 
 .NOTES
-    Backup files left behind by Install-PromptCraft.ps1 (named
-    <folder>.promptcraft-backup) are NOT touched by this script; restore or
+    Backup files left behind by Install-BotteryBarn.ps1 (named
+    <folder>.botterybarn-backup) are NOT touched by this script; restore or
     delete them manually as needed.
 #>
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
@@ -49,7 +49,7 @@ if ($DryRun) {
     $WhatIfPreference = $true
 }
 
-function Get-PromptCraftRoot {
+function Get-BotteryBarnRoot {
     $scriptDir = Split-Path -Parent $PSCommandPath
     return (Resolve-Path (Join-Path $scriptDir '..')).ProviderPath
 }
@@ -110,8 +110,8 @@ function Get-ExistingEntry {
 
 # ----- main -----
 
-$promptCraftRoot = Get-PromptCraftRoot
-Write-Host "PromptCraft root : $promptCraftRoot"
+$botteryBarnRoot = Get-BotteryBarnRoot
+Write-Host "BotteryBarn root : $botteryBarnRoot"
 
 if (-not (Test-Path -LiteralPath $TargetPath -PathType Container)) {
     throw "TargetPath does not exist or is not a directory: $TargetPath"
@@ -140,12 +140,12 @@ foreach ($folder in $Folders) {
         continue
     }
 
-    if (-not (Test-SymlinkPointsInto -Item $item -ExpectedRoot $promptCraftRoot)) {
+    if (-not (Test-SymlinkPointsInto -Item $item -ExpectedRoot $botteryBarnRoot)) {
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (link points elsewhere)'; Detail = "$link -> $($item.Target)" })
         continue
     }
 
-    if ($PSCmdlet.ShouldProcess($link, 'Remove PromptCraft symlink')) {
+    if ($PSCmdlet.ShouldProcess($link, 'Remove BotteryBarn symlink')) {
         Remove-Item -LiteralPath $link -Force
         $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'removed'; Detail = $link })
     } else {

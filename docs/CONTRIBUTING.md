@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for adding to PromptCraft. This guide covers the mechanics of contributing a new agent, skill, tool, prompt, or instruction.
+Thanks for adding to BotteryBarn. This guide covers the mechanics of contributing a new agent, skill, tool, prompt, or instruction.
 
 ## Before you start
 
@@ -40,7 +40,7 @@ Use the decision tree in `AGENCY-MODEL.md`:
 
 - **New agent that uses a skill or tool?** Add the id to the agent's `skills:` / `tools:` list.
 - **New skill bundled with code?** Place scripts under `skills/<name>/scripts/` and reference them with relative paths in `SKILL.md`.
-- **New tool with a runtime config?** Fill in the `config` block in frontmatter — don't hard-code paths; use `${PROMPTCRAFT_ROOT}` or environment variables.
+- **New tool with a runtime config?** Fill in the `config` block in frontmatter — don't hard-code paths; use `${BOTTERYBARN_ROOT}` or environment variables.
 - **New instruction?** Set `applyTo` to the narrowest correct glob — repo-wide (`**`) is a last resort.
 
 ### 5. Check it

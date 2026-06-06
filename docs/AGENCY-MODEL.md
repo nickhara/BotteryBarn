@@ -1,6 +1,6 @@
 # The agency model
 
-PromptCraft is organized around the **agency model**: agents are the primary primitive, and every other resource type (skills, tools, prompts, instructions) exists to be composed by an agent.
+BotteryBarn is organized around the **agency model**: agents are the primary primitive, and every other resource type (skills, tools, prompts, instructions) exists to be composed by an agent.
 
 ## The five resource types
 
@@ -40,7 +40,7 @@ A scoped, glob-applied rule that should always be true when matching files are i
 
 ## Why agents are first
 
-Most other organizing frameworks for AI assets center on **prompts** ("a library of prompts") or **tools** ("a registry of MCP servers"). PromptCraft centers on **agents** because:
+Most other organizing frameworks for AI assets center on **prompts** ("a library of prompts") or **tools** ("a registry of MCP servers"). BotteryBarn centers on **agents** because:
 
 1. **The user's mental model is "who is helping me?"**, not "which prompt fragment was used?" An agent name is something a human can talk about.
 2. **Agents compose everything else.** Skills, tools, prompts, and instructions are reusable inputs, but only agents are user-facing endpoints.

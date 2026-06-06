@@ -11,11 +11,11 @@ config:
   args_template:
     - -NoProfile
     - -File
-    - "${PROMPTCRAFT_ROOT}/tools/scripts/repo-inspector.ps1"
+    - "${BOTTERYBARN_ROOT}/tools/scripts/repo-inspector.ps1"
     - -RepoPath
     - "{repo_path}"
   env:
-    PROMPTCRAFT_ROOT: <absolute path to this PromptCraft repo on the host>
+    BOTTERYBARN_ROOT: <absolute path to this BotteryBarn repo on the host>
 inputs:
   - name: repo_path
     description: Absolute path to the repository to inspect.
@@ -32,7 +32,7 @@ outputs:
 
 > **Status: contract only.** This entry documents the intended interface. The
 > reference implementation script (`tools/scripts/repo-inspector.ps1`) is not
-> shipped in v1 of PromptCraft. Downstream agents may reference this tool by id
+> shipped in v1 of BotteryBarn. Downstream agents may reference this tool by id
 > today; an implementer can land the script later without renaming or rewiring.
 
 ## When to use
