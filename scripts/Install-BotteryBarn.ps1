@@ -157,20 +157,20 @@ function Test-SymlinkPointsTo {
 }
 
 function Get-ExistingEntry {
-    # Returns the FileSystemInfo for $Path if anything exists there (including a
-    # symlink whose target is missing — which Test-Path -LiteralPath reports as
+    # Returns the FileSystemInfo for $LiteralPath if anything exists there (including
+    # a symlink whose target is missing — which Test-Path -LiteralPath reports as
     # absent on Windows/PS7), or $null otherwise.
     param(
-        [Parameter(Mandatory)] [string] $Path
+        [Parameter(Mandatory)] [string] $LiteralPath
     )
 
-    $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+    $item = Get-Item -LiteralPath $LiteralPath -Force -ErrorAction SilentlyContinue
     if ($item) { return $item }
 
     # Fallback: enumerate the parent directory so we can see a dangling reparse
     # point that Get-Item refuses to materialize.
-    $parent = Split-Path -Parent $Path
-    $leaf   = Split-Path -Leaf   $Path
+    $parent = Split-Path -Parent $LiteralPath
+    $leaf   = Split-Path -Leaf   $LiteralPath
     if (-not $parent -or -not (Test-Path -LiteralPath $parent -PathType Container)) {
         return $null
     }
@@ -221,7 +221,7 @@ foreach ($folder in $Folders) {
 
     $linkValue = Resolve-LinkValue -SourcePath $source -LinkPath $link -UseRelative:$Relative.IsPresent
 
-    $existing = Get-ExistingEntry -Path $link
+    $existing = Get-ExistingEntry -LiteralPath $link
     if ($existing) {
         $isSymlink = $existing.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)
 
@@ -243,6 +243,9 @@ foreach ($folder in $Folders) {
             }
             if ($PSCmdlet.ShouldProcess($link, 'Remove mismatched/dangling symlink')) {
                 Remove-Item -LiteralPath $link -Force
+            } elseif (-not $DryRun) {
+                $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = $link })
+                continue
             }
         } else {
             if (-not $Force) {
@@ -250,11 +253,14 @@ foreach ($folder in $Folders) {
                 continue
             }
             $backup = "$link.botterybarn-backup"
-            if (Test-Path -LiteralPath $backup) {
+            if (Get-ExistingEntry -LiteralPath $backup) {
                 $backup = "$link.botterybarn-backup-$(Get-Date -Format 'yyyyMMddHHmmss')"
             }
             if ($PSCmdlet.ShouldProcess($link, "Rename existing entry to $backup")) {
                 Move-Item -LiteralPath $link -Destination $backup
+            } elseif (-not $DryRun) {
+                $summary.Add([pscustomobject]@{ Folder = $folder; Action = 'skipped (confirmation declined)'; Detail = $link })
+                continue
             }
         }
     }
